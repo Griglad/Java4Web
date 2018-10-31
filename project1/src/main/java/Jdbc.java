@@ -37,7 +37,7 @@ public class Jdbc {
 
 
 
-    public static Vehicle selectVehicleByPlate(String plate) throws SQLException {
+    public static Vehicle selectVehicleByPlate(String plate)  {
         String show = "select id,plate,owner_id,insurance_exp_date  from vehicle where plate = ?";
         ResultSet resultSet = null;
         Vehicle veh = null;
@@ -54,12 +54,15 @@ public class Jdbc {
                 veh = new Vehicle(id,owner_id,plateNumber,insurance_exp_date);
             }
 
-            if (veh==null){
-                return null;
-            }
-            else {
-                return veh;
-            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if (veh==null){
+            return null;
+        }
+        else {
+            return veh;
         }
     }
 
