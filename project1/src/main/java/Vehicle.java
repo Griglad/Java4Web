@@ -47,6 +47,7 @@ public class Vehicle implements Comparable<Vehicle>{
         this.owner_id = owner_id;
         this.id = id;
         this.expiration_date = expiration_date;
+
     }
 
     @Override
