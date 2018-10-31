@@ -7,6 +7,32 @@
     <groupId>team3</groupId>
     <artifactId>project1</artifactId>
     <version>1.0-SNAPSHOT</version>
+	
+	<properties>
+        <mysql.driver.version>8.0.13</mysql.driver.version>
+    </properties>
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.driver.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${mysql.driver.version}</version>
+                <configuration>
+                    <source>7</source>
+                    <target>7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>
