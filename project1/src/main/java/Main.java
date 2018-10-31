@@ -56,13 +56,14 @@ public class Main {
         String regex="^[a-zA-Z]{3}-\\d{4}$";
 
         if(plateNumbers.matches(regex)){
-            Vehicle targetVehicle=null;
+            Vehicle targetVehicle=null ;
             //Vehicle targetVehicle=returnTargetVeh(plateNumbers); // Return the insurance status of the given plate
             if(targetVehicle.getExpiration_date().compareTo(new Date())==1){
                 System.out.println("--- The insurance of the vehicle with plate number "+plateNumbers+" is expired");
             }
             else{
                 System.out.println("--- The insurance of the vehicle with plate number "+plateNumbers+" is valid");
+
             }
         }
         else{
