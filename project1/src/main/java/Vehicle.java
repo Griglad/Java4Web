@@ -3,7 +3,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 
-public class Vehicle {
+public class Vehicle implements Comparable<Vehicle>{
     private String plate;
     private int owner_id;
     private int id;
@@ -59,6 +59,9 @@ public class Vehicle {
                 '}';
     }
 
+    public int compareTo(Vehicle o) {// kane to implemenation
+        return 0;
+    }
 }
 
 

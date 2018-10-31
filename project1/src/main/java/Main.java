@@ -1,5 +1,6 @@
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.Collections;
 
@@ -54,8 +55,15 @@ public class Main {
 
         String regex="^[a-zA-Z]{3}-\\d{4}$";
 
-        if(plateNumbers.matches(regex)){ // If the given plate number matches the correct format
-            //returnVehiclesInsStat(plateNumbers); // Return the insurance status of the given plate
+        if(plateNumbers.matches(regex)){
+            Vehicle targetVehicle=null;
+            //Vehicle targetVehicle=returnTargetVeh(plateNumbers); // Return the insurance status of the given plate
+            if(targetVehicle.getExpiration_date().compareTo(new Date())==1){
+                System.out.println("--- The insurance of the vehicle with plate number "+plateNumbers+" is expired");
+            }
+            else{
+                System.out.println("--- The insurance of the vehicle with plate number "+plateNumbers+" is valid");
+            }
         }
         else{
             System.out.println("---The given plate does not follow the correct format");
@@ -89,19 +97,17 @@ public class Main {
 
 
         if(choice.equals("1")){
-            try {
-                CsvFileCreator.createCSVfile();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            CsvFileCreator.createCSVfile(aboutToExpireList);
         }
         else if(choice.equals("2")){
-            System.out.println("--- The list of plate number that their insurances are about to expire until "+ //date);
+            System.out.println("--- The list of plate number that their insurances are about to expire until "+ expiringDate);
+            System.out.println();
+            System.out.println(" Vehicle's ID | Plate Number | Owner ID | Insurance Expiration Date");
             for(int i=0; i<aboutToExpireList.size(); i++){
-
-                System.out.println("");
-
-
+                System.out.println(aboutToExpireList.get(i).getId());
+                System.out.println(aboutToExpireList.get(i).getPlate());
+                System.out.println(aboutToExpireList.get(i).getOwner_id());
+                System.out.println(aboutToExpireList.get(i).getExpiration_date());
             }
 
         }
