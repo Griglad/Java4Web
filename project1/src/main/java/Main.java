@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Collections;
@@ -18,7 +19,7 @@ public class Main {
 
     }
 
-    public static void startingMenu(){ // The starting menu of the application
+    public static void startingMenu(){
         System.out.println("---- Select functionality to perform:");
         System.out.println("* 1) Vehicle Insurance Status");
         System.out.println("* 2) Forecoming Expiries");
@@ -45,7 +46,7 @@ public class Main {
 
     }
 
-    public static void firstChoiceSelected(){ // Vehicle insurance status
+    public static void firstChoiceSelected(){
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("---Please provide the vehicle's plate numbers:");
@@ -64,21 +65,22 @@ public class Main {
 
     }
 
-    private static void secondChoiceSelected(){  // Display vehicles’  that their Insurances are about to expire
-
+    private static void secondChoiceSelected(){
         Scanner scanner = new Scanner(System.in);
-        ArrayList<String> aboutToExpireList=new ArrayList<String>();
+        System.out.println("--- Insert an expiring date in the following format yyyy/mm/dd:");
+        String expiringDate = scanner.nextLine();
 
-        aboutToExpireList.add("abd-123");
-        aboutToExpireList.add("abc-123");
-        aboutToExpireList.add("abc-122");
+        // meterepse se date logika
+
+        ArrayList<Vehicle> aboutToExpireList=new ArrayList<Vehicle>();
+
+
         // Gemise tin lista kalodas jdbc
 
-        resultSorting(aboutToExpireList); // Result check for sorting and sort execution
+        resultSorting(aboutToExpireList);
 
 
         System.out.println("_____________________________________");
-
         System.out.println("---Enter Export Type:");
         System.out.println("* 1) File");
         System.out.println("* 2) Console");
@@ -86,13 +88,22 @@ public class Main {
         String choice = scanner.nextLine();
 
 
-        if(choice.equals("1")){ // Create a csv file
-            //createFile();
+        if(choice.equals("1")){
+            try {
+                CsvFileCreator.createCSVfile();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
-        else if(choice.equals("2")){ // Print in console
-            System.out.println(aboutToExpireList.get(0));
-            System.out.println(aboutToExpireList.get(1));
-            System.out.println(aboutToExpireList.get(2));
+        else if(choice.equals("2")){
+            System.out.println("--- The list of plate number that their insurances are about to expire until "+ //date);
+            for(int i=0; i<aboutToExpireList.size(); i++){
+
+                System.out.println("");
+
+
+            }
+
         }
         else{
             System.out.println("You must select one of the three choices (1,2,3)");
@@ -101,7 +112,7 @@ public class Main {
 
     }
 
-    private static void resultSorting(ArrayList<String> aboutToExpireList){ // If requested, sort the results
+    private static void resultSorting(ArrayList<Vehicle> aboutToExpireList){
 
         Scanner scanner = new Scanner(System.in);
         System.out.println("---Would you like to have the results sorted?");
@@ -123,7 +134,7 @@ public class Main {
     }
 
 
-    private static void thirdChoiceSelected(){ // Fine calculation per owner
+    private static void thirdChoiceSelected(){
 
         Scanner scanner = new Scanner(System.in);
 
