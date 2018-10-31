@@ -53,17 +53,17 @@ public class Main {
         System.out.println("---Please provide the vehicle's plate numbers:");
         String plateNumbers = scanner.nextLine();
 
-        String regex="^[a-zA-Z]{3}-\\d{4}$" ;
+        String regex="^[a-zA-Z]{3}-\\d{4}$";
 
         if(plateNumbers.matches(regex)){
-            Vehicle targetVehicle=null ;
+            Vehicle targetVehicle=null;
+           // Vehicle targetVehicle=Jdbc.selectVehicleByPlate(plateNumbers);
             //Vehicle targetVehicle=returnTargetVeh(plateNumbers); // Return the insurance status of the given plate
             if(targetVehicle.getExpiration_date().compareTo(new Date())==1){
                 System.out.println("--- The insurance of the vehicle with plate number "+plateNumbers+" is expired");
             }
             else{
                 System.out.println("--- The insurance of the vehicle with plate number "+plateNumbers+" is valid");
-
             }
         }
         else{
