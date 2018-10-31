@@ -48,6 +48,7 @@ public class Vehicle implements Comparable<Vehicle>{
         this.id = id;
         this.expiration_date = expiration_date;
 
+
     }
 
     @Override

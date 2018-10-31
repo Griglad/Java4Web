@@ -53,7 +53,7 @@ public class Main {
         System.out.println("---Please provide the vehicle's plate numbers:");
         String plateNumbers = scanner.nextLine();
 
-        String regex="^[a-zA-Z]{3}-\\d{4}$";
+        String regex="^[a-zA-Z]{3}-\\d{4}$" ;
 
         if(plateNumbers.matches(regex)){
             Vehicle targetVehicle=null ;
