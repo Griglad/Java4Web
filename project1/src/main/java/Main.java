@@ -21,7 +21,7 @@ public class Main {
 
     }
 
-    public static void startingMenu(){
+    private static void startingMenu(){
         System.out.println("---- Select functionality to perform:");
         System.out.println("* 1) Vehicle Insurance Status");
         System.out.println("* 2) Forecoming Expiries");
@@ -48,7 +48,7 @@ public class Main {
 
     }
 
-    public static void firstChoiceSelected(){
+    private static void firstChoiceSelected(){
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("---Please provide the vehicle's plate numbers:");
@@ -57,10 +57,10 @@ public class Main {
         String regex="^[a-zA-Z]{3}-\\d{4}$";
 
         if(plateNumbers.matches(regex)){
-            Vehicle targetVehicle=null;
-           // Vehicle targetVehicle=Jdbc.selectVehicleByPlate(plateNumbers);
-            //Vehicle targetVehicle=returnTargetVeh(plateNumbers); // Return the insurance status of the given plate
-            if(targetVehicle.getExpiration_date().compareTo(new Date())==1){
+
+            Vehicle targetVehicle=Jdbc.selectVehicleByPlate(plateNumbers);
+
+            if(targetInsExpired(targetVehicle)==true){
                 System.out.println("--- The insurance of the vehicle with plate number "+plateNumbers+" is expired");
             }
             else{
@@ -72,6 +72,16 @@ public class Main {
             firstChoiceSelected();
         }
 
+
+    }
+
+    private static boolean targetInsExpired(Vehicle targetVehicle){
+        if(targetVehicle.getExpiration_date().compareTo(new Date())==1){
+            return true;
+        }
+        else{
+            return false;
+        }
 
     }
 
