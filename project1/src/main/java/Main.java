@@ -1,4 +1,5 @@
 import java.io.FileNotFoundException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -141,9 +142,39 @@ public class Main {
     }
 
 
-    private static void thirdChoiceSelected(){
+    private static void thirdChoiceSelected() {
 
+        System.out.println("---Please provide the fine cost of an uninsured vehicle (cents):");
         Scanner scanner = new Scanner(System.in);
+
+
+        System.out.println("---Please provide the owner's id in order to calculate the total fine cost:");
+
+        int ownerId = Integer.valueOf(scanner.nextLine());
+
+        Jdbc jdbc = new Jdbc();
+
+        ArrayList<Vehicle> vehicles = null;
+        try {
+            vehicles = jdbc.getVehiclesByOwnerId(ownerId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        int sum = 0;
+        for (Vehicle v:vehicles) {
+            //TODO: Check the date if expired
+            if(true){
+
+            }
+
+        }
+
+        try {
+            jdbc.closeDBConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         System.out.println();
         String motorbikeFine = scanner.nextLine();
