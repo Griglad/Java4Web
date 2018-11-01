@@ -10,7 +10,7 @@ public class Jdbc {
             + "serverTimezone=UTC";
 
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "610680";
+    private static final String DB_PASSWORD = "java4web";
     private static Connection connection;
 
 

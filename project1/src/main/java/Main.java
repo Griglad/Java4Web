@@ -1,9 +1,5 @@
-import java.io.FileNotFoundException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Scanner;
-import java.util.Collections;
+import java.util.*;
 
 public class Main {
 
@@ -85,6 +81,7 @@ public class Main {
 
     }
 
+
     private static void secondChoiceSelected(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("--- Insert an expiring date in the following format yyyy/mm/dd:");
@@ -156,10 +153,9 @@ public class Main {
 
         System.out.println("---Please provide the fine cost of an uninsured vehicle (cents):");
         Scanner scanner = new Scanner(System.in);
-
+        int fine = Integer.valueOf(scanner.nextLine());
 
         System.out.println("---Please provide the owner's id in order to calculate the total fine cost:");
-
         int ownerId = Integer.valueOf(scanner.nextLine());
 
         Jdbc jdbc = new Jdbc();
@@ -173,12 +169,12 @@ public class Main {
 
         int sum = 0;
         for (Vehicle v:vehicles) {
-            //TODO: Check the date if expired
-            if(true){
 
-            }
-
+            if(!isVehicleInsured(v))
+                sum+=fine;
         }
+
+        System.out.println("The total fine cost that owner with id " + String.valueOf(ownerId) + " is: " + String.valueOf(sum));
 
         try {
             jdbc.closeDBConnection();
@@ -191,6 +187,26 @@ public class Main {
 
 
 
+    }
+
+    private static boolean isVehicleInsured(Vehicle v, int daysOffset){
+
+        if(v.getExpiration_date()==null)
+            return false;
+        else{
+            Calendar dateForComparison = Calendar.getInstance();
+            if(daysOffset!=0)
+                dateForComparison.add(Calendar.DATE, daysOffset);
+
+            Calendar insuranceExpDate = Calendar.getInstance();
+            insuranceExpDate.setTime(v.getExpiration_date());
+
+            return v.getExpiration_date()!=null && !Util.isAfterDate(insuranceExpDate,dateForComparison);
+        }
+    }
+
+    private static boolean isVehicleInsured(Vehicle v){
+        return isVehicleInsured(v, 0);
     }
 
 }

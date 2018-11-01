@@ -1,10 +1,9 @@
 import java.util.Calendar;
+import java.util.Date;
 
-public final class Utils {
+public final class Util {
 
-    private static boolean isDateAfter(Calendar dateToCheck, Calendar dateForComparison){
-
+    public static boolean isAfterDate(Calendar dateToCheck, Calendar dateForComparison){
+        return dateToCheck.after(dateForComparison);
     }
-
-
 }
