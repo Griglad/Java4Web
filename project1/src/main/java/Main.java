@@ -1,5 +1,4 @@
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -7,7 +6,7 @@ public class Main {
 
     static int a=5;
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws DataBaseNotFound,SQLeX {
 
         System.out.println(" ------------------------------------");
         System.out.println("|       First Project - Team 3       |");
@@ -19,7 +18,7 @@ public class Main {
 
     }
 
-    private static void startingMenu(){
+    private static void startingMenu() throws DataBaseNotFound, SQLeX {
         System.out.println("---- Select functionality to perform:");
         System.out.println("* 1) Vehicle Insurance Status");
         System.out.println("* 2) Forecoming Expiries");
@@ -46,7 +45,8 @@ public class Main {
 
     }
 
-    private static void firstChoiceSelected(){
+    private static void firstChoiceSelected() throws SQLeX, DataBaseNotFound {
+        Jdbc jdbc = new Jdbc();
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("---Please provide the vehicle's plate numbers:");
@@ -161,7 +161,7 @@ public class Main {
     }
 
 
-    private static void thirdChoiceSelected() {
+    private static void thirdChoiceSelected() throws DataBaseNotFound {
 
         System.out.println("---Please provide the fine cost of an uninsured vehicle (cents):");
         Scanner scanner = new Scanner(System.in);
