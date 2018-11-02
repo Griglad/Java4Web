@@ -29,13 +29,13 @@ public class CsvFileCreator{
         sb.append('\n');
 
         for(int i=0;i<insToExpireList.size();i++) {
-            sb.append(insToExpireList.get(i));
+            sb.append(insToExpireList.get(i).getId());
             sb.append(',');
-            sb.append(insToExpireList.get(i));
+            sb.append(insToExpireList.get(i).getPlate());
             sb.append(',');
-            sb.append(insToExpireList.get(i));
+            sb.append(insToExpireList.get(i).getOwner_id());
             sb.append(',');
-            sb.append(insToExpireList.get(i));
+            sb.append(insToExpireList.get(i).getExpiration_date());
             sb.append('\n');
 
         }

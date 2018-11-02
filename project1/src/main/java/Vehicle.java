@@ -62,7 +62,9 @@ public class Vehicle implements Comparable<Vehicle>{
     }
 
     public int compareTo(Vehicle o) {// kane to implemenation
-        return 0;
+
+        return this.plate.compareTo(o.plate);
+
     }
 }
 

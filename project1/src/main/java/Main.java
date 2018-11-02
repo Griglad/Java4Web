@@ -1,4 +1,6 @@
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Main {
@@ -54,9 +56,11 @@ public class Main {
 
         if(plateNumbers.matches(regex)){
 
-            Vehicle targetVehicle=Jdbc.selectVehicleByPlate(plateNumbers);
+            Jdbc jdbc=new Jdbc();
+            Vehicle targetVehicle=jdbc.selectVehicleByPlate(plateNumbers);
+            jdbc.closeDBConnection();
 
-            if(targetInsExpired(targetVehicle)==true){
+            if(isVehicleInsured(targetVehicle)){
                 System.out.println("--- The insurance of the vehicle with plate number "+plateNumbers+" is expired");
             }
             else{
@@ -71,30 +75,36 @@ public class Main {
 
     }
 
-    private static boolean targetInsExpired(Vehicle targetVehicle){
-        if(targetVehicle.getExpiration_date().compareTo(new Date())==1){
-            return true;
-        }
-        else{
-            return false;
-        }
-
-    }
-
 
     private static void secondChoiceSelected(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("--- Insert an expiring date in the following format yyyy/mm/dd:");
-        String expiringDate = scanner.nextLine();
+        System.out.println("--- Insert an expiring date in the following format dd/MM/yyyy:");
+        String dateString = scanner.nextLine();
 
-        // meterepse se date logika
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Date date=new Date();
+        try {
+            date = formatter.parse(dateString);
+        } catch (ParseException e) {
+            System.out.println("---The expiring date that was given, does not follow the correct format");
+            secondChoiceSelected();
+        }
 
-        ArrayList<Vehicle> aboutToExpireList=new ArrayList<Vehicle>();
+        Jdbc jdbc=new Jdbc();
+        ArrayList<Vehicle> vehicleList=jdbc.getlistOfAllVehicles();
+        jdbc.closeDBConnection();
 
 
-        // Gemise tin lista kalodas jdbc
+        for(int i=0;i<vehicleList.size();i++){
+            if(vehicleList.get(i).getExpiration_date()!=null){
+                if (vehicleList.get(i).getExpiration_date().after(date)) {
+                    System.out.println("+++++++++++++++++++");
+                    vehicleList.remove(i);
+                }
+            }
+        }
 
-        resultSorting(aboutToExpireList);
+        resultSorting(vehicleList);
 
 
         System.out.println("_____________________________________");
@@ -106,17 +116,19 @@ public class Main {
 
 
         if(choice.equals("1")){
-            CsvFileCreator.createCSVfile(aboutToExpireList);
+            CsvFileCreator.createCSVfile(vehicleList);
         }
         else if(choice.equals("2")){
-            System.out.println("--- The list of plate number that their insurances are about to expire until "+ expiringDate);
+            System.out.println("--- The list of plate number that their insurances are about to expire until "+ date);
             System.out.println();
             System.out.println(" Vehicle's ID | Plate Number | Owner ID | Insurance Expiration Date");
-            for(int i=0; i<aboutToExpireList.size(); i++){
-                System.out.println(aboutToExpireList.get(i).getId());
-                System.out.println(aboutToExpireList.get(i).getPlate());
-                System.out.println(aboutToExpireList.get(i).getOwner_id());
-                System.out.println(aboutToExpireList.get(i).getExpiration_date());
+
+            for(int i=0; i<vehicleList.size(); i++){
+                System.out.print(vehicleList.get(i).getId()+"                ");
+                System.out.print(vehicleList.get(i).getPlate()+"     ");
+                System.out.print(vehicleList.get(i).getOwner_id()+"     ");
+                System.out.print(vehicleList.get(i).getExpiration_date()+"     ");
+                System.out.println();
             }
 
         }
@@ -176,11 +188,11 @@ public class Main {
 
         System.out.println("The total fine cost that owner with id " + String.valueOf(ownerId) + " is: " + String.valueOf(sum));
 
-        try {
+
             jdbc.closeDBConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
+
+
 
         System.out.println();
         String motorbikeFine = scanner.nextLine();
