@@ -5,55 +5,49 @@ import java.util.Date;
 public class Jdbc {
 
     private static final String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
-    private static final String DB_CONNECTION = "jdbc:mysql://localhost:3306/prj1?useUnicode=true"
+    private static final String DB_CONNECTION = "jdbc:mysql://localhost:3306/newdatabase?useUnicode=true"
             + "&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&"
             + "serverTimezone=UTC";
 
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "java4web";
+    private static final String DB_PASSWORD = "pass";
     private static Connection connection;
 
 
-    public Jdbc() throws DataBaseNotFound {
+    public Jdbc()  {
         try {
             connection = getDBConnection();
         } catch (Exception e) {
-            throw new DataBaseNotFound();
+            System.out.println("--- ! Could not connect to data base");
         }
 
     }
 
-    private static Connection getDBConnection() throws SQLeX, DataBaseNotFound {
-        try {
-            Class.forName(DB_DRIVER);
-
+    private Connection getDBConnection()  {
             try {
+                Class.forName(DB_DRIVER);
                 return DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);
-            } catch (SQLException e) {
-                throw new SQLeX();
+            }
+             catch (ClassNotFoundException | SQLException e) {
+                 System.out.println("--- ! Could not connect to data base");
+                 return null;
             }
 
-        } catch (ClassNotFoundException e) {
-            throw new DataBaseNotFound();
-        }
     }
 
 
-    public void closeDBConnection() throws  SQLeX {
+    public void closeDBConnection() {
         if (connection != null) {
             try {
                 connection.close();
-            }catch (Exception e)
-            {
-                throw new SQLeX();
+            } catch (SQLException e) {
+                System.out.println("--- ! Connection to the database could not be closed");
             }
         }
     }
 
 
-
-
-    public  Vehicle selectVehicleByPlate(String plate) throws SQLeX {
+    public  Vehicle selectVehicleByPlate(String plate) {
         String show = "select id,plate,owner_id,insurance_exp_date from vehicle where plate = ?";
         ResultSet resultSet = null;
         Vehicle veh = null;
@@ -72,12 +66,13 @@ public class Jdbc {
             return veh;
 
         } catch (SQLException e) {
-            throw new SQLeX();
+            System.out.println("--- ! Data from table vehicle could not be fetched.");
+            return null;
         }
 
     }
 
-    public Owner selectOwnerById(int id) throws SQLeX {
+    public Owner selectOwnerById(int id) {
         String show = "select id,last_name,first_name from owner where id = ?";
         ResultSet resultSet = null;
         Owner owner = null;
@@ -92,18 +87,15 @@ public class Jdbc {
 
                 owner = new Owner(owner_id, lastName, firstName);
             }
-
-
             return owner;
         } catch (SQLException e) {
-            throw new SQLeX();
+            System.out.println("--- ! Data from table owner could not be fetched.");
+            return null;
         }
-
-
     }
 
 
-    public ArrayList<Vehicle> getlistOfAllVehicles() throws SQLeX {
+    public ArrayList<Vehicle> getlistOfAllVehicles() {
         ArrayList<Vehicle> vehicles = new ArrayList<>();
         Vehicle veh = null;
         String show = "select *  from vehicle";
@@ -123,12 +115,13 @@ public class Jdbc {
             return vehicles;
 
         } catch (SQLException e) {
-            throw new SQLeX();
+            System.out.println("--- ! Data from table vehicle could not be fetched.");
+            return null;
         }
 
     }
 
-    public ArrayList<Vehicle> getVehiclesByOwnerId(int ownerId) throws SQLeX {
+    public ArrayList<Vehicle> getVehiclesByOwnerId(int ownerId) {
         ArrayList<Vehicle> vehicles = new ArrayList<>();
         Vehicle veh = null;
         String show = "select *  from vehicle where owner_id=?";
@@ -148,7 +141,8 @@ public class Jdbc {
             }
             return vehicles;
         } catch (SQLException e) {
-            throw new SQLeX();
+            System.out.println("--- ! Data from table vehicle could not be fetched.");
+            return null;
         }
 
 

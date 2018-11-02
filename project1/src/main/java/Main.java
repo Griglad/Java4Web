@@ -79,43 +79,17 @@ public class Main {
 
     private static void secondChoiceSelected(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("--- Insert an expiring date in the following format dd/MM/yyyy:");
-        String dateString = scanner.nextLine();
+        System.out.println("--- Insert a number of days, to see the vehicles that their insurances will be expired");
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        Date date=new Date();
-        try {
-            date = formatter.parse(dateString);
-        } catch (ParseException e) {
-            System.out.println("---The expiring date that was given, does not follow the correct format");
-            secondChoiceSelected();
-        }
+        int days =Integer.parseInt(scanner.nextLine());
 
-        Jdbc jdbc= null;
-        try {
-            jdbc = new Jdbc();
-        } catch (DataBaseNotFound dataBaseNotFound) {
-            dataBaseNotFound.printStackTrace();
-        }
-        ArrayList<Vehicle> vehicleList= null;
-        try {
-            vehicleList = jdbc.getlistOfAllVehicles();
-        } catch (SQLeX throwables) {
-            throwables.printStackTrace();
-        }
-        try {
-            jdbc.closeDBConnection();
-        } catch (SQLeX throwables) {
-            throwables.printStackTrace();
-        }
-
+        Jdbc jdbc = new Jdbc();
+        ArrayList<Vehicle> vehicleList = jdbc.getlistOfAllVehicles();
+        jdbc.closeDBConnection();
 
         for(int i=0;i<vehicleList.size();i++){
-            if(vehicleList.get(i).getExpiration_date()!=null){
-                if (vehicleList.get(i).getExpiration_date().after(date)) {
-                    System.out.println("+++++++++++++++++++");
+            if(isVehicleInsured(vehicleList.get(i),days)){
                     vehicleList.remove(i);
-                }
             }
         }
 
@@ -127,14 +101,14 @@ public class Main {
         System.out.println("* 1) File");
         System.out.println("* 2) Console");
 
-        String choice = scanner.nextLine();
+        String exportTypeChoice = scanner.nextLine();
 
 
-        if(choice.equals("1")){
+        if(exportTypeChoice.equals("1")){
             CsvFileCreator.createCSVfile(vehicleList);
         }
-        else if(choice.equals("2")){
-            System.out.println("--- The list of plate number that their insurances are about to expire until "+ date);
+        else if(exportTypeChoice.equals("2")){
+            System.out.println("--- The list of plate number that their insurances are about to expire in "+ days +" days");
             System.out.println();
             System.out.println(" Vehicle's ID | Plate Number | Owner ID | Insurance Expiration Date");
 
@@ -188,11 +162,8 @@ public class Main {
         Jdbc jdbc = new Jdbc();
 
         ArrayList<Vehicle> vehicles = null;
-        try {
-            vehicles = jdbc.getVehiclesByOwnerId(ownerId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
+        vehicles = jdbc.getVehiclesByOwnerId(ownerId);
 
         int sum = 0;
         for (Vehicle v:vehicles) {
@@ -202,19 +173,7 @@ public class Main {
         }
 
         System.out.println("The total fine cost that owner with id " + String.valueOf(ownerId) + " is: " + String.valueOf(sum));
-
-
-        try {
-            jdbc.closeDBConnection();
-        } catch (SQLeX throwables) {
-            throwables.printStackTrace();
-        }
-
-
-        System.out.println();
-        String motorbikeFine = scanner.nextLine();
-
-
+        jdbc.closeDBConnection();
 
     }
 
