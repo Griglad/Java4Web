@@ -5,12 +5,12 @@ import java.util.Date;
 public class Jdbc {
 
     private static final String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
-    private static final String DB_CONNECTION = "jdbc:mysql://localhost:3306/prj1ε?useUnicode=true"
+    private static final String DB_CONNECTION = "jdbc:mysql://localhost:3306/prj1?useUnicode=true"
             + "&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&"
             + "serverTimezone=UTC";
 
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "2101521015La";
+    private static final String DB_PASSWORD = "java4web";
     private static Connection connection;
 
 
@@ -69,9 +69,8 @@ public class Jdbc {
                 veh = new Vehicle(id, plateNumber, owner_id, insurance_exp_date);
             }
 
-            {
-                return veh;
-            }
+            return veh;
+
         } catch (SQLException e) {
             throw new SQLeX();
         }

@@ -1,4 +1,5 @@
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -46,7 +47,7 @@ public class Main {
     }
 
     private static void firstChoiceSelected() throws SQLeX, DataBaseNotFound {
-        Jdbc jdbc = new Jdbc();
+
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("---Please provide the vehicle's plate numbers:");
@@ -90,9 +91,23 @@ public class Main {
             secondChoiceSelected();
         }
 
-        Jdbc jdbc=new Jdbc();
-        ArrayList<Vehicle> vehicleList=jdbc.getlistOfAllVehicles();
-        jdbc.closeDBConnection();
+        Jdbc jdbc= null;
+        try {
+            jdbc = new Jdbc();
+        } catch (DataBaseNotFound dataBaseNotFound) {
+            dataBaseNotFound.printStackTrace();
+        }
+        ArrayList<Vehicle> vehicleList= null;
+        try {
+            vehicleList = jdbc.getlistOfAllVehicles();
+        } catch (SQLeX throwables) {
+            throwables.printStackTrace();
+        }
+        try {
+            jdbc.closeDBConnection();
+        } catch (SQLeX throwables) {
+            throwables.printStackTrace();
+        }
 
 
         for(int i=0;i<vehicleList.size();i++){
@@ -189,9 +204,11 @@ public class Main {
         System.out.println("The total fine cost that owner with id " + String.valueOf(ownerId) + " is: " + String.valueOf(sum));
 
 
+        try {
             jdbc.closeDBConnection();
-
-
+        } catch (SQLeX throwables) {
+            throwables.printStackTrace();
+        }
 
 
         System.out.println();
