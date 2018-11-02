@@ -1,6 +1,3 @@
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Main {
@@ -50,50 +47,67 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("---Please provide the vehicle's plate numbers:");
-        String plateNumbers = scanner.nextLine();
+        Jdbc jdbc = new Jdbc();
+        Vehicle targetVehicle = null;
+        String plateNumbers = null;
+        boolean flag = true;
 
-        String regex="^[a-zA-Z]{3}-\\d{4}$";
 
-        if(plateNumbers.matches(regex)){
-
-            Jdbc jdbc=new Jdbc();
-            Vehicle targetVehicle=jdbc.selectVehicleByPlate(plateNumbers);
-            jdbc.closeDBConnection();
-
-            if(isVehicleInsured(targetVehicle)){
-                System.out.println("--- The insurance of the vehicle with plate number "+plateNumbers+" is expired");
+        while(flag){
+            System.out.println("---Please provide the vehicle's plate numbers:");
+            plateNumbers = scanner.nextLine();
+            String regex="^[a-zA-Z]{3}-\\d{4}$";
+            if(plateNumbers.matches(regex)) {
+                targetVehicle = jdbc.selectVehicleByPlate(plateNumbers);
+                if(targetVehicle!=null)
+                    flag = false;
+                else
+                    System.out.println("---The given plate does not exist! Try another one...");
+            }else {
+                System.out.println("---The given plate does not follow the correct format");
             }
-            else{
-                System.out.println("--- The insurance of the vehicle with plate number "+plateNumbers+" is valid");
-            }
-        }
-        else{
-            System.out.println("---The given plate does not follow the correct format");
-            firstChoiceSelected();
         }
 
 
+        jdbc.closeDBConnection();
+
+        if(isVehicleInsured(targetVehicle)){
+            System.out.println("--- The insurance of the vehicle with plate number '"+plateNumbers+"' is valid.");
+        }
+        else {
+            System.out.println("--- The insurance of the vehicle with plate number '" + plateNumbers + "' is expired.");
+        }
     }
 
 
     private static void secondChoiceSelected(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("--- Insert a number of days, to see the vehicles that their insurances will be expired");
 
-        int days =Integer.parseInt(scanner.nextLine());
+        int days = 0;
+
+        boolean flag = true;
+        while(flag){
+            System.out.println("---Insert a number of days, to see the vehicles that their insurances will be expired:");
+            days = Util.ReadInt(scanner, "---Wrong input. Please give an integer for number of days.");
+            if(days>-1)
+                flag = false;
+            else
+                System.out.println("---Given integer must not be negative!");
+        }
 
         Jdbc jdbc = new Jdbc();
-        ArrayList<Vehicle> vehicleList = jdbc.getlistOfAllVehicles();
+        ArrayList<Vehicle> vehicleList = jdbc.getListOfAllVehicles();
+        ArrayList<Vehicle> aboutToExpireList = new ArrayList<>();
         jdbc.closeDBConnection();
 
-        for(int i=0;i<vehicleList.size();i++){
-            if(isVehicleInsured(vehicleList.get(i),days)){
-                    vehicleList.remove(i);
+
+        for(Vehicle v:  vehicleList){
+            if(isVehicleInsured(v) && !isVehicleInsured(v,days)){
+                aboutToExpireList.add(v);
             }
         }
 
-        resultSorting(vehicleList);
+        resultSorting(aboutToExpireList);
 
 
         System.out.println("_____________________________________");
@@ -105,24 +119,16 @@ public class Main {
 
 
         if(exportTypeChoice.equals("1")){
-            CsvFileCreator.createCSVfile(vehicleList);
+            CsvFileCreator.createCSVfile(aboutToExpireList);
         }
         else if(exportTypeChoice.equals("2")){
             System.out.println("--- The list of plate number that their insurances are about to expire in "+ days +" days");
             System.out.println();
-            System.out.println(" Vehicle's ID | Plate Number | Owner ID | Insurance Expiration Date");
 
-            for(int i=0; i<vehicleList.size(); i++){
-                System.out.print(vehicleList.get(i).getId()+"                ");
-                System.out.print(vehicleList.get(i).getPlate()+"     ");
-                System.out.print(vehicleList.get(i).getOwner_id()+"     ");
-                System.out.print(vehicleList.get(i).getExpiration_date()+"     ");
-                System.out.println();
-            }
-
+            printVehicles(aboutToExpireList);
         }
         else{
-            System.out.println("You must select one of the three choices (1,2,3)");
+            System.out.println("You must select one of the two choices (1 or 2)");
             secondChoiceSelected();
         }
 
@@ -149,21 +155,51 @@ public class Main {
 
     }
 
+    private static void printVehicles(ArrayList<Vehicle> vehicles){
 
-    private static void thirdChoiceSelected() throws DataBaseNotFound {
+        String leftAlignFormat = "| %8s | %10d | %15s %-15s | %12s |%n";
+
+        System.out.println("+----------+------------+---------------------------------+--------------+");
+        System.out.println("| Plate No | Owner's ID |          Owner's Name           | Ins Exp Date |");
+        System.out.println("+----------+------------+---------------------------------+--------------+");
+        for(int i=0; i<vehicles.size(); i++){
+            Vehicle v = vehicles.get(i);
+            System.out.format(leftAlignFormat, v.getPlate(),v.getOwner().getId(), v.getOwner().getLastName(), v.getOwner().getFirstName() ,v.getExpiration_date());
+        }
+        System.out.println("+----------+------------+---------------------------------+--------------+");
+    }
+
+    private static void thirdChoiceSelected(){
 
         System.out.println("---Please provide the fine cost of an uninsured vehicle (cents):");
         Scanner scanner = new Scanner(System.in);
-        int fine = Integer.valueOf(scanner.nextLine());
 
-        System.out.println("---Please provide the owner's id in order to calculate the total fine cost:");
-        int ownerId = Integer.valueOf(scanner.nextLine());
+        int fine = Util.ReadInt(scanner);
 
         Jdbc jdbc = new Jdbc();
-
         ArrayList<Vehicle> vehicles = null;
+        Owner owner = null;
+        while(owner==null){
+            System.out.println("---Please provide the owner id in order to calculate the total fine cost:");
+            int ownerId = Util.ReadInt(scanner);
+            owner = jdbc.getOwnerById(ownerId);
 
-        vehicles = jdbc.getVehiclesByOwnerId(ownerId);
+            if(owner==null){
+                System.out.println("The given owner id does not exist!");
+                continue;
+            }
+
+            vehicles = jdbc.getVehiclesByOwnerId(ownerId);
+
+            if(vehicles.isEmpty()){
+                System.out.println("The owner '" + owner.getLastName() + " " + owner.getFirstName() + "'"
+                        + " with id '" + ownerId + "' has no vehicles.");
+                System.exit(0);
+            }
+        }
+
+
+        jdbc.closeDBConnection();
 
         int sum = 0;
         for (Vehicle v:vehicles) {
@@ -172,8 +208,9 @@ public class Main {
                 sum+=fine;
         }
 
-        System.out.println("The total fine cost that owner with id " + String.valueOf(ownerId) + " is: " + String.valueOf(sum));
-        jdbc.closeDBConnection();
+        System.out.println("---The total fine cost that owner '"+owner.getLastName() + " " + owner.getFirstName()
+                + "' with id '" + String.valueOf(owner.getId()) + "' is:");
+        System.out.printf("%d.%02d", sum/100, sum%100);
 
     }
 
@@ -182,19 +219,13 @@ public class Main {
         if(v.getExpiration_date()==null)
             return false;
         else{
-            Calendar dateForComparison = Calendar.getInstance();
-            if(daysOffset!=0)
-                dateForComparison.add(Calendar.DATE, daysOffset);
-
-            Calendar insuranceExpDate = Calendar.getInstance();
-            insuranceExpDate.setTime(v.getExpiration_date());
-
-            return v.getExpiration_date()!=null && !Util.isAfterDate(insuranceExpDate,dateForComparison);
+            return !Util.isBeforeDate(Util.toCalendar(v.getExpiration_date()),daysOffset);
         }
     }
 
     private static boolean isVehicleInsured(Vehicle v){
         return isVehicleInsured(v, 0);
     }
+
 
 }

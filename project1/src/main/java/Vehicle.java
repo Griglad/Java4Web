@@ -3,7 +3,7 @@ import java.util.Date;
 
 public class Vehicle implements Comparable<Vehicle>{
     private String plate;
-    private int owner_id;
+    private Owner owner;
     private int id;
     private Date expiration_date;
 
@@ -23,12 +23,12 @@ public class Vehicle implements Comparable<Vehicle>{
         this.expiration_date = expiration_date;
     }
 
-    public int getOwner_id() {
-        return owner_id;
+    public Owner getOwner() {
+        return owner;
     }
 
-    public void setOwner_id(int owner_id) {
-        this.owner_id = owner_id;
+    public void setOwner_id(Owner owner) {
+        this.owner = owner;
     }
 
     public int getId() {
@@ -40,9 +40,9 @@ public class Vehicle implements Comparable<Vehicle>{
     }
 
 
-    public Vehicle(int id,  String plate,int owner_id, Date expiration_date) {
+    public Vehicle(int id,  String plate,Owner owner, Date expiration_date) {
         this.plate = plate;
-        this.owner_id = owner_id;
+        this.owner = owner;
         this.id = id;
         this.expiration_date = expiration_date;
 
@@ -53,7 +53,7 @@ public class Vehicle implements Comparable<Vehicle>{
     public String toString() {
         return "Vehicle{" +
                 "plate='" + plate + '\'' +
-                ", owner_id=" + owner_id +
+                ", " + owner.toString() +
                 ", id=" + id +
                 ", expiration_date=" + expiration_date +
                 '}';

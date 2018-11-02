@@ -23,7 +23,11 @@ public class CsvFileCreator{
         sb.append(',');
         sb.append("Plate Number");
         sb.append(',');
-        sb.append("Owner ID");
+        sb.append("Owner's ID");
+        sb.append(',');
+        sb.append("Owner's Last Name");
+        sb.append(',');
+        sb.append("Owner's First Name");
         sb.append(',');
         sb.append("Insurance Expiration Date");
         sb.append('\n');
@@ -33,7 +37,11 @@ public class CsvFileCreator{
             sb.append(',');
             sb.append(insToExpireList.get(i).getPlate());
             sb.append(',');
-            sb.append(insToExpireList.get(i).getOwner_id());
+            sb.append(insToExpireList.get(i).getOwner().getId());
+            sb.append(',');
+            sb.append(insToExpireList.get(i).getOwner().getLastName());
+            sb.append(',');
+            sb.append(insToExpireList.get(i).getOwner().getFirstName());
             sb.append(',');
             sb.append(insToExpireList.get(i).getExpiration_date());
             sb.append('\n');

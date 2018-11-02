@@ -5,12 +5,12 @@ import java.util.Date;
 public class Jdbc {
 
     private static final String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
-    private static final String DB_CONNECTION = "jdbc:mysql://localhost:3306/newdatabase?useUnicode=true"
+    private static final String DB_CONNECTION = "jdbc:mysql://localhost:3306/prj1?useUnicode=true"
             + "&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&"
             + "serverTimezone=UTC";
 
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "pass";
+    private static final String DB_PASSWORD = "java4web";
     private static Connection connection;
 
 
@@ -50,20 +50,21 @@ public class Jdbc {
     public  Vehicle selectVehicleByPlate(String plate) {
         String show = "select id,plate,owner_id,insurance_exp_date from vehicle where plate = ?";
         ResultSet resultSet = null;
-        Vehicle veh = null;
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(show)) {
             preparedStatement.setString(1, plate);
             resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
+            if (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String plateNumber = resultSet.getString("plate");
-                int owner_id = resultSet.getInt("owner_id");
                 Date insurance_exp_date = resultSet.getDate("insurance_exp_date");
 
-                veh = new Vehicle(id, plateNumber, owner_id, insurance_exp_date);
+                int owner_id = resultSet.getInt("owner_id");
+                Owner owner = getOwnerById(owner_id);
+                return new Vehicle(id, plateNumber, owner, insurance_exp_date);
             }
 
-            return veh;
+            return null;
 
         } catch (SQLException e) {
             System.out.println("--- ! Data from table vehicle could not be fetched.");
@@ -72,7 +73,7 @@ public class Jdbc {
 
     }
 
-    public Owner selectOwnerById(int id) {
+    public Owner getOwnerById(int id) {
         String show = "select id,last_name,first_name from owner where id = ?";
         ResultSet resultSet = null;
         Owner owner = null;
@@ -94,21 +95,24 @@ public class Jdbc {
         }
     }
 
-
-    public ArrayList<Vehicle> getlistOfAllVehicles() {
+    public ArrayList<Vehicle> getListOfAllVehicles() {
         ArrayList<Vehicle> vehicles = new ArrayList<>();
         Vehicle veh = null;
-        String show = "select *  from vehicle";
+        String show = "select vehicle.*, owner.first_name, owner.last_name from vehicle " +
+                "inner join owner on vehicle.owner_id=owner.id";
         ResultSet resultSet = null;
         try (PreparedStatement preparedStatement = connection.prepareStatement(show)) {
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                int owner_id = resultSet.getInt("owner_id");
-                String plateNumber = resultSet.getString("plate");
-                Date insurance_exp_date = resultSet.getDate("insurance_exp_date");
+                int owner_id = resultSet.getInt("vehicle.owner_id");
+                String owner_last_name = resultSet.getString("owner.last_name");
+                String owner_first_name = resultSet.getString("owner.first_name");
+                Owner owner = new Owner(owner_id,owner_last_name,owner_first_name);
 
-                veh = new Vehicle(id, plateNumber, owner_id, insurance_exp_date);
+                int id = resultSet.getInt("vehicle.id");
+                String plateNumber = resultSet.getString("vehicle.plate");
+                Date insurance_exp_date = resultSet.getDate("vehicle.insurance_exp_date");
+                veh = new Vehicle(id, plateNumber, owner, insurance_exp_date);
 
                 vehicles.add(veh);
             }
@@ -118,24 +122,25 @@ public class Jdbc {
             System.out.println("--- ! Data from table vehicle could not be fetched.");
             return null;
         }
-
     }
 
     public ArrayList<Vehicle> getVehiclesByOwnerId(int ownerId) {
         ArrayList<Vehicle> vehicles = new ArrayList<>();
         Vehicle veh = null;
-        String show = "select *  from vehicle where owner_id=?";
+        String show = "select id, plate, insurance_exp_date from vehicle where owner_id=?";
         ResultSet resultSet = null;
+
+        Owner owner = getOwnerById(ownerId);
         try (PreparedStatement preparedStatement = connection.prepareStatement(show)) {
             preparedStatement.setInt(1, ownerId);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                int owner_id = resultSet.getInt("owner_id");
                 String plateNumber = resultSet.getString("plate");
                 Date insurance_exp_date = resultSet.getDate("insurance_exp_date");
 
-                veh = new Vehicle(id, plateNumber, owner_id, insurance_exp_date);
+
+                veh = new Vehicle(id, plateNumber, owner, insurance_exp_date);
 
                 vehicles.add(veh);
             }
@@ -144,8 +149,5 @@ public class Jdbc {
             System.out.println("--- ! Data from table vehicle could not be fetched.");
             return null;
         }
-
-
     }
-
 }

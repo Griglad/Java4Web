@@ -2,13 +2,13 @@ public class Owner {
 
 
     private int id;
-    private String last_name;
-    private String first_name;
+    private String lastName;
+    private String firstName;
 
-    public Owner(int id, String last_name, String first_name) {
+    public Owner(int id, String lastName, String firstName) {
         this.id = id;
-        this.last_name = last_name;
-        this.first_name = first_name;
+        this.lastName = lastName;
+        this.firstName = firstName;
     }
 
 
@@ -16,19 +16,19 @@ public class Owner {
         return id;
     }
 
-    public String getLast_name() {
-        return last_name;
+    public String getLastName() {
+        return lastName;
     }
 
-    public String getFirst_name() {
-        return first_name;
+    public String getFirstName() {
+        return firstName;
     }
 
     @Override
     public String toString() {
         return "Owner{" +
-                "last_name='" + last_name + '\'' +
-                ", first_name='" + first_name + '\'' +
+                "lastName='" + lastName + '\'' +
+                ", firstName='" + firstName + '\'' +
                 '}';
     }
 
