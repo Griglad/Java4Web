@@ -5,68 +5,80 @@ import java.util.Date;
 public class Jdbc {
 
     private static final String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
-    private static final String DB_CONNECTION =  "jdbc:mysql://localhost:3306/prj1?useUnicode=true"
+    private static final String DB_CONNECTION = "jdbc:mysql://localhost:3306/prj1ε?useUnicode=true"
             + "&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&"
             + "serverTimezone=UTC";
 
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "java4web";
+    private static final String DB_PASSWORD = "2101521015La";
     private static Connection connection;
 
 
-    public Jdbc() {
+    public Jdbc() throws DataBaseNotFound {
         try {
             connection = getDBConnection();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new DataBaseNotFound();
         }
 
     }
 
-    private static Connection getDBConnection() throws Exception {
-        Class.forName(DB_DRIVER);
-        return DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);
+    private static Connection getDBConnection() throws SQLeX, DataBaseNotFound {
+        try {
+            Class.forName(DB_DRIVER);
+
+            try {
+                return DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);
+            } catch (SQLException e) {
+                throw new SQLeX();
+            }
+
+        } catch (ClassNotFoundException e) {
+            throw new DataBaseNotFound();
+        }
     }
 
 
-    public void closeDBConnection() throws SQLException {
+    public void closeDBConnection() throws  SQLeX {
         if (connection != null) {
-            connection.close();
+            try {
+                connection.close();
+            }catch (Exception e)
+            {
+                throw new SQLeX();
+            }
         }
     }
 
 
 
-    public static Vehicle selectVehicleByPlate(String plate)  {
-        String show = "select id,plate,owner_id,insurance_exp_date  from vehicle where plate = ?";
+
+    public  Vehicle selectVehicleByPlate(String plate) throws SQLeX {
+        String show = "select id,plate,owner_id,insurance_exp_date from vehicle where plate = ?";
         ResultSet resultSet = null;
         Vehicle veh = null;
         try (PreparedStatement preparedStatement = connection.prepareStatement(show)) {
             preparedStatement.setString(1, plate);
-
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                int owner_id = resultSet.getInt("owner_id");
                 String plateNumber = resultSet.getString("plate");
+                int owner_id = resultSet.getInt("owner_id");
                 Date insurance_exp_date = resultSet.getDate("insurance_exp_date");
 
-                veh = new Vehicle(id,owner_id,plateNumber,insurance_exp_date);
+                veh = new Vehicle(id, plateNumber, owner_id, insurance_exp_date);
             }
 
+            {
+                return veh;
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLeX();
         }
 
-        if (veh==null){
-            return null;
-        }
-        else {
-            return veh;
-        }
     }
 
-    public Owner selectOwnerById(int id) throws SQLException {
+    public Owner selectOwnerById(int id) throws SQLeX {
         String show = "select id,last_name,first_name from owner where id = ?";
         ResultSet resultSet = null;
         Owner owner = null;
@@ -79,67 +91,68 @@ public class Jdbc {
                 String lastName = resultSet.getString("last_name");
                 String firstName = resultSet.getString("first_name");
 
-                owner = new Owner(owner_id,lastName,firstName);
+                owner = new Owner(owner_id, lastName, firstName);
             }
 
-            if (owner==null){
-                return null;
-            }
-            else {
-                return owner;
-            }
+
+            return owner;
+        } catch (SQLException e) {
+            throw new SQLeX();
         }
+
+
     }
 
 
-
-
-    public ArrayList<Vehicle> getlistOfAllVehicles() throws SQLException {
+    public ArrayList<Vehicle> getlistOfAllVehicles() throws SQLeX {
         ArrayList<Vehicle> vehicles = new ArrayList<>();
         Vehicle veh = null;
         String show = "select *  from vehicle";
         ResultSet resultSet = null;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(show))
-        {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(show)) {
             resultSet = preparedStatement.executeQuery();
-            while (resultSet.next())
-            {
+            while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 int owner_id = resultSet.getInt("owner_id");
                 String plateNumber = resultSet.getString("plate");
                 Date insurance_exp_date = resultSet.getDate("insurance_exp_date");
 
-                veh = new Vehicle(id,owner_id,plateNumber,insurance_exp_date);
+                veh = new Vehicle(id, plateNumber, owner_id, insurance_exp_date);
 
                 vehicles.add(veh);
             }
             return vehicles;
 
+        } catch (SQLException e) {
+            throw new SQLeX();
         }
 
     }
 
-    public ArrayList<Vehicle> getVehiclesByOwnerId(int ownerId) throws SQLException {
+    public ArrayList<Vehicle> getVehiclesByOwnerId(int ownerId) throws SQLeX {
         ArrayList<Vehicle> vehicles = new ArrayList<>();
         Vehicle veh = null;
         String show = "select *  from vehicle where owner_id=?";
         ResultSet resultSet = null;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(show))
-        {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(show)) {
             preparedStatement.setInt(1, ownerId);
             resultSet = preparedStatement.executeQuery();
-            while (resultSet.next())
-            {
+            while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 int owner_id = resultSet.getInt("owner_id");
                 String plateNumber = resultSet.getString("plate");
                 Date insurance_exp_date = resultSet.getDate("insurance_exp_date");
 
-                veh = new Vehicle(id,owner_id,plateNumber,insurance_exp_date);
+                veh = new Vehicle(id, plateNumber, owner_id, insurance_exp_date);
 
                 vehicles.add(veh);
             }
             return vehicles;
+        } catch (SQLException e) {
+            throw new SQLeX();
         }
+
+
     }
+
 }

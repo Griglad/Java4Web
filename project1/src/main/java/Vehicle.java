@@ -1,5 +1,3 @@
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Date;
 
 
@@ -42,7 +40,7 @@ public class Vehicle implements Comparable<Vehicle>{
     }
 
 
-    public Vehicle(int id, int owner_id, String plate, Date expiration_date) {
+    public Vehicle(int id,  String plate,int owner_id, Date expiration_date) {
         this.plate = plate;
         this.owner_id = owner_id;
         this.id = id;
