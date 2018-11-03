@@ -1,24 +1,26 @@
+import DB.DBConnection;
+import Entities.Owner;
+import Entities.Vehicle;
+import UI.MenuManager;
+import Utils.Util;
+
 import java.util.*;
 
 public class Main {
 
-    static int a=5;
-
     public static void main(String[] args) throws DataBaseNotFound,SQLeX {
 
-        System.out.println(" ------------------------------------");
-        System.out.println("|       First Project - Team 3       |");
-        System.out.println(" ------------------------------------");
+        DBConnection dbConnection = new DBConnection();
 
-        System.out.println();
+        MenuManager menu= new MenuManager();
+        menu.runMenu(dbConnection.getConnection());
 
-        startingMenu();
-
+        dbConnection.closeConnection();
     }
-
+/*
     private static void startingMenu() throws DataBaseNotFound, SQLeX {
         System.out.println("---- Select functionality to perform:");
-        System.out.println("* 1) Vehicle Insurance Status");
+        System.out.println("* 1) Entities.Vehicle Insurance Status");
         System.out.println("* 2) Forecoming Expiries");
         System.out.println("* 3) Calculate Fines");
         Scanner scanner = new Scanner(System.in);
@@ -40,7 +42,6 @@ public class Main {
             System.out.println("You must select one of the four choices (1,2,3)");
             startingMenu();
         }
-
     }
 
     private static void firstChoiceSelected() throws SQLeX, DataBaseNotFound {
@@ -160,7 +161,7 @@ public class Main {
         String leftAlignFormat = "| %8s | %10d | %15s %-15s | %12s |%n";
 
         System.out.println("+----------+------------+---------------------------------+--------------+");
-        System.out.println("| Plate No | Owner's ID |          Owner's Name           | Ins Exp Date |");
+        System.out.println("| Plate No | Entities.Owner's ID |          Entities.Owner's Name           | Ins Exp Date |");
         System.out.println("+----------+------------+---------------------------------+--------------+");
         for(int i=0; i<vehicles.size(); i++){
             Vehicle v = vehicles.get(i);
@@ -214,18 +215,7 @@ public class Main {
 
     }
 
-    private static boolean isVehicleInsured(Vehicle v, int daysOffset){
-
-        if(v.getExpiration_date()==null)
-            return false;
-        else{
-            return !Util.isBeforeDate(Util.toCalendar(v.getExpiration_date()),daysOffset);
-        }
-    }
-
-    private static boolean isVehicleInsured(Vehicle v){
-        return isVehicleInsured(v, 0);
-    }
+   */
 
 
 }

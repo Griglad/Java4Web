@@ -1,3 +1,5 @@
+import Entities.Vehicle;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.FileNotFoundException;
@@ -19,15 +21,15 @@ public class CsvFileCreator{
             e.printStackTrace();
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("Vehicle's ID");
+        sb.append("Entities.Vehicle's ID");
         sb.append(',');
         sb.append("Plate Number");
         sb.append(',');
-        sb.append("Owner's ID");
+        sb.append("Entities.Owner's ID");
         sb.append(',');
-        sb.append("Owner's Last Name");
+        sb.append("Entities.Owner's Last Name");
         sb.append(',');
-        sb.append("Owner's First Name");
+        sb.append("Entities.Owner's First Name");
         sb.append(',');
         sb.append("Insurance Expiration Date");
         sb.append('\n');

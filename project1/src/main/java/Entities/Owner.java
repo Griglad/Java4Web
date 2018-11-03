@@ -1,3 +1,5 @@
+package Entities;
+
 public class Owner {
 
 
@@ -26,7 +28,7 @@ public class Owner {
 
     @Override
     public String toString() {
-        return "Owner{" +
+        return "Entities.Owner{" +
                 "lastName='" + lastName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 '}';

@@ -1,3 +1,7 @@
+package Entities;
+
+import Utils.Util;
+
 import java.util.Date;
 
 
@@ -51,7 +55,7 @@ public class Vehicle implements Comparable<Vehicle>{
 
     @Override
     public String toString() {
-        return "Vehicle{" +
+        return "Entities.Vehicle{" +
                 "plate='" + plate + '\'' +
                 ", " + owner.toString() +
                 ", id=" + id +
@@ -64,6 +68,7 @@ public class Vehicle implements Comparable<Vehicle>{
         return this.plate.compareTo(o.plate);
 
     }
+
 }
 
 

@@ -1,7 +1,8 @@
-import java.util.Calendar;
-import java.util.Date;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+package Utils;
+
+import Entities.Vehicle;
+
+import java.util.*;
 
 public final class Util {
 
@@ -48,6 +49,39 @@ public final class Util {
         return num;
     }
 
+    public static boolean isVehicleInsured(Vehicle v, int daysOffset){
+
+        if(v.getExpiration_date()==null)
+            return false;
+        else{
+            return !Util.isBeforeDate(Util.toCalendar(v.getExpiration_date()),daysOffset);
+        }
+    }
+
+    public static boolean isVehicleInsured(Vehicle v){
+        return isVehicleInsured(v, 0);
+    }
+
+    public static void resultSorting(ArrayList<Vehicle> aboutToExpireList){
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("---Would you like to have the results sorted?");
+        System.out.println("--- y : yes   |   n: no");
+        String toBeSorted = scanner.nextLine();
+
+        if(toBeSorted.equals("y")){
+            // Sort the result list
+            Collections.sort(aboutToExpireList);
+        }
+        else if (toBeSorted.equals("n")){
+            // No sorting algorithm will be applied
+        }
+        else{
+            System.out.println("Please choose one of the two valid options: y / n");
+            resultSorting(aboutToExpireList);
+        }
+
+    }
 
 //    public static Integer ReadInt(Scanner scanner, String message){
 //
