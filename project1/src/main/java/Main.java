@@ -6,6 +6,11 @@ public class Main {
 
     public static void main(String[] args) throws DataBaseNotFound,SQLeX {
 
+        PropertiesFileManager p= new PropertiesFileManager();
+
+
+
+
         System.out.println(" ------------------------------------");
         System.out.println("|       First Project - Team 3       |");
         System.out.println(" ------------------------------------");
