@@ -4,17 +4,23 @@ import java.util.Date;
 
 public class Jdbc {
 
-    private static final String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
-    private static final String DB_CONNECTION = "jdbc:mysql://localhost:3306/prj1?useUnicode=true"
-            + "&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&"
-            + "serverTimezone=UTC";
-
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "java4web";
+    static DBConnectionInfo info;
+    private static String DB_DRIVER;
+    private static String DB_CONNECTION;
+    private static String DB_USER;
+    private static String DB_PASSWORD;
     private static Connection connection;
 
 
     public Jdbc()  {
+
+        info =PropertiesFileManager.loadFile();
+        DB_DRIVER = info.getDB_DRIVER();
+        DB_CONNECTION = info.getDB_CONNECTION();
+        DB_USER = info.getDB_USER();
+        DB_PASSWORD = info.getDB_PASSWORD();
+
+        System.out.println(DB_DRIVER);
         try {
             connection = getDBConnection();
         } catch (Exception e) {
