@@ -1,5 +1,6 @@
 package App;
 
+import DB.DataBaseException;
 import DB.OwnerFacade;
 import DB.VehicleFacade;
 import Entities.Owner;
@@ -22,12 +23,12 @@ public class TotalFineCalculator {
         return sum;
     }
 
-    public Owner getOwner(Connection connection, int ownerId){
+    public Owner getOwner(Connection connection, int ownerId) throws DataBaseException {
 
         return new OwnerFacade().getOwnerById(connection, ownerId);
     }
 
-    public ArrayList<Vehicle> getVehiclesByOwnerId(Connection connection, int ownerId){
+    public ArrayList<Vehicle> getVehiclesByOwnerId(Connection connection, int ownerId) throws DataBaseException {
         return new VehicleFacade().getVehiclesByOwnerId(connection,ownerId);
     }
 }

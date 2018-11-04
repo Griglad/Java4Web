@@ -1,15 +1,15 @@
 package DB;
 
+import Entities.Owner;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import Entities.Owner;
-
 public class OwnerFacade {
 
-    public Owner getOwnerById(Connection dbConnection, int id) {
+    public Owner getOwnerById(Connection dbConnection, int id)throws DataBaseException {
         String show = "select id,last_name,first_name from owner where id = ?";
         Owner owner = null;
         try (PreparedStatement preparedStatement = dbConnection.prepareStatement(show)) {
@@ -25,8 +25,8 @@ public class OwnerFacade {
             }
             return owner;
         } catch (SQLException e) {
-            System.err.println("--- ! Data from table owner could not be fetched.");
-            return null;
+
+            throw new DataBaseException("Unable to get vehicles by owner id",e);
         }
     }
 }

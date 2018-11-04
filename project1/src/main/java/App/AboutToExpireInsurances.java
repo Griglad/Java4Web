@@ -1,5 +1,6 @@
 package App;
 
+import DB.DataBaseException;
 import DB.VehicleFacade;
 import Entities.Vehicle;
 
@@ -12,7 +13,7 @@ import java.util.Collections;
 
 public class AboutToExpireInsurances {
 
-    public ArrayList<Vehicle> getListOfExpiringInsurances(Connection connection, int days, boolean isSortSelected){
+    public ArrayList<Vehicle> getListOfExpiringInsurances(Connection connection, int days, boolean isSortSelected) throws DataBaseException {
 
         ArrayList<Vehicle> aboutToExpireList = new ArrayList<>();
         ArrayList<Vehicle> vehicleList = new VehicleFacade().getListOfAllVehicles(connection);

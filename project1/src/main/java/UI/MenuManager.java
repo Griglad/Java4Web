@@ -3,6 +3,7 @@ package UI;
 import App.AboutToExpireInsurances;
 import App.VehicleInsuranceStatusChecker;
 import App.TotalFineCalculator;
+import DB.DataBaseException;
 import Entities.Owner;
 import Entities.Vehicle;
 import Utils.Util;
@@ -13,7 +14,7 @@ import java.util.Scanner;
 
 public class MenuManager {
 
-    public void runMenu(Connection connection) {
+    public void runMenu(Connection connection) throws DataBaseException {
 
         printAvailableFeatures();
 
@@ -38,7 +39,7 @@ public class MenuManager {
         System.out.println(" ------------------------------------");
         System.out.println();
         System.out.println("---- Select functionality to perform:");
-        System.out.println("* 1) Entities.Vehicle Insurance Status");
+        System.out.println("* 1) Vehicle Insurance Status");
         System.out.println("* 2) Forecoming Expiries");
         System.out.println("* 3) Calculate Fines");
     }
@@ -61,7 +62,7 @@ public class MenuManager {
         return choice;
     }
 
-    private void runCheckInsuranceStatus(Connection connection){
+    private void runCheckInsuranceStatus(Connection connection) throws DataBaseException {
 
         VehicleUIManager vUIManager = new VehicleUIManager();
         Vehicle vehicle = vUIManager.getVehicleByReadingPlate(connection);
@@ -69,7 +70,7 @@ public class MenuManager {
         vUIManager.printVehicleInsuranceStatus(isVehicleInsured);
     }
 
-    private void runAboutToExpireInsurances(Connection connection){
+    private void runAboutToExpireInsurances(Connection connection) throws DataBaseException {
         UIManager uiManager = new UIManager();
         AboutToExpireInsurances ateInsurance = new AboutToExpireInsurances();
 
@@ -86,7 +87,7 @@ public class MenuManager {
         }
     }
 
-    private void runTotalOwnerFineCalculator(Connection connection){
+    private void runTotalOwnerFineCalculator(Connection connection) throws DataBaseException {
 
         TotalFineCalculator totalFineCalculator = new TotalFineCalculator();
         UIManager uiManager = new UIManager();

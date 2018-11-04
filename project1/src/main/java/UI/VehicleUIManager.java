@@ -1,6 +1,7 @@
 package UI;
 
 import App.VehicleInsuranceStatusChecker;
+import DB.DataBaseException;
 import Entities.Vehicle;
 
 import java.sql.Connection;
@@ -9,7 +10,7 @@ import java.util.Scanner;
 
 class VehicleUIManager {
 
-    Vehicle getVehicleByReadingPlate(Connection connection){
+    Vehicle getVehicleByReadingPlate(Connection connection) throws DataBaseException {
         while (true) {
             String plate = readPlate();
             Vehicle targetVehicle = new VehicleInsuranceStatusChecker().getVehicleByPlate(connection, plate);

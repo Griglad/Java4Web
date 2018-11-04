@@ -12,7 +12,7 @@ import java.util.Date;
 
 public class VehicleFacade {
 
-    public ArrayList<Vehicle> getListOfAllVehicles(Connection dbConnection) {
+    public ArrayList<Vehicle> getListOfAllVehicles(Connection dbConnection) throws DataBaseException {
         ArrayList<Vehicle> vehicles = new ArrayList<>();
 
         String show = "select vehicle.*, owner.first_name, owner.last_name from vehicle " +
@@ -35,12 +35,11 @@ public class VehicleFacade {
             return vehicles;
 
         } catch (SQLException e) {
-            System.err.println("--- ! Data from table vehicle could not be fetched.");
-            return null;
+            throw new DataBaseException("Unable to get the list by all vehicles",e);
         }
     }
 
-    public  Vehicle selectVehicleByPlate(Connection dbConnection, String plate) {
+    public  Vehicle selectVehicleByPlate(Connection dbConnection, String plate) throws DataBaseException {
         String show = "select id,plate,owner_id,insurance_exp_date from vehicle where plate = ?";
 
         try (PreparedStatement preparedStatement = dbConnection.prepareStatement(show)) {
@@ -60,13 +59,13 @@ public class VehicleFacade {
             return null;
 
         } catch (SQLException e) {
-            System.err.println("--- ! Data from table vehicle could not be fetched.");
-            return null;
+
+            throw new DataBaseException("Unable to retrieve data",e);
         }
 
     }
 
-    public ArrayList<Vehicle> getVehiclesByOwnerId(Connection dbConnection, int ownerId) {
+    public ArrayList<Vehicle> getVehiclesByOwnerId(Connection dbConnection, int ownerId)throws DataBaseException {
         ArrayList<Vehicle> vehicles = new ArrayList<>();
 
         String show = "select id, plate, insurance_exp_date from vehicle where owner_id=?";
@@ -87,8 +86,8 @@ public class VehicleFacade {
             }
             return vehicles;
         } catch (SQLException e) {
-            System.err.println("--- ! Data from table vehicle could not be fetched.");
-            return null;
+            throw new DataBaseException("Unable to retrieve data",e);
+
         }
     }
 }

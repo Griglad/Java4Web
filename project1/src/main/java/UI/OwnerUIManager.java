@@ -1,13 +1,14 @@
 package UI;
 
 import App.TotalFineCalculator;
+import DB.DataBaseException;
 import Entities.Owner;
 
 import java.sql.Connection;
 
 class OwnerUIManager {
 
-    Owner readOwnerId(Connection connection){
+    Owner readOwnerId(Connection connection) throws DataBaseException {
         while(true){
             int ownerId = new UIManager().readNotNegativeInteger("---Please provide the owner id in order to calculate the total fine cost:");
             Owner owner = new TotalFineCalculator().getOwner(connection, ownerId);

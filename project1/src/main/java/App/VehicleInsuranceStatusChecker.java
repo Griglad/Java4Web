@@ -1,5 +1,6 @@
 package App;
 
+import DB.DataBaseException;
 import DB.VehicleFacade;
 import Entities.Vehicle;
 
@@ -13,7 +14,7 @@ public class VehicleInsuranceStatusChecker {
         return vehicle.isInsured();
     }
 
-    public Vehicle getVehicleByPlate(Connection connection, String plateNumbers){
+    public Vehicle getVehicleByPlate(Connection connection, String plateNumbers) throws DataBaseException {
 
         return new VehicleFacade().selectVehicleByPlate(connection, plateNumbers);
     }
