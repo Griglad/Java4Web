@@ -2,68 +2,79 @@ package App;
 
 import DB.VehicleFacade;
 import Entities.Vehicle;
-import Utils.Util;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Scanner;
-
-import static Utils.Util.isVehicleInsured;
-import static Utils.Util.resultSorting;
+import java.util.Collections;
 
 public class AboutToExpireInsurances {
 
-    public ArrayList<Vehicle> getListOfExpiringInsurances(Connection connection){
+    public ArrayList<Vehicle> getListOfExpiringInsurances(Connection connection, int days, boolean isSortSelected){
 
-        Scanner scanner = new Scanner(System.in);
-
-        int days = 0;
-
-        boolean flag = true;
-        while(flag){
-            System.out.println("---Insert a number of days, to see the vehicles that their insurances will be expired:");
-            days = Util.ReadInt(scanner, "---Wrong input. Please give an integer for number of days.");
-            if(days>-1)
-                flag = false;
-            else
-                System.out.println("---Given integer must not be negative!");
-        }
-
-
-        ArrayList<Vehicle> vehicleList = new VehicleFacade().getListOfAllVehicles(connection);
         ArrayList<Vehicle> aboutToExpireList = new ArrayList<>();
-
+        ArrayList<Vehicle> vehicleList = new VehicleFacade().getListOfAllVehicles(connection);
 
         for(Vehicle v:  vehicleList){
-            if(isVehicleInsured(v) && !isVehicleInsured(v,days)){
+            if(v.isInsured() && !v.isInsured(days)){
                 aboutToExpireList.add(v);
             }
         }
 
-        resultSorting(aboutToExpireList);
+        if(isSortSelected)
+            Collections.sort(aboutToExpireList);
 
+        return aboutToExpireList;
+    }
 
-        System.out.println("_____________________________________");
-        System.out.println("---Enter Export Type:");
-        System.out.println("* 1) File");
-        System.out.println("* 2) Console");
+    public void  createCSVfile(ArrayList<Vehicle> insToExpireList)  {
 
-        String exportTypeChoice = scanner.nextLine();
+        PrintWriter pw=null;
+        String fileName="InsToExpire.csv";
 
-
-        if(exportTypeChoice.equals("1")){
-            CsvFileCreator.createCSVfile(aboutToExpireList);
+        try {
+            pw = new PrintWriter(new File(fileName));
+        } catch (FileNotFoundException e) {
+            System.out.println("--! The file could not be created");
+            e.printStackTrace();
         }
-        else if(exportTypeChoice.equals("2")){
-            System.out.println("--- The list of plate number that their insurances are about to expire in "+ days +" days");
-            System.out.println();
+        StringBuilder sb = new StringBuilder();
+        sb.append("Entities.Vehicle's ID");
+        sb.append(',');
+        sb.append("Plate Number");
+        sb.append(',');
+        sb.append("Entities.Owner's ID");
+        sb.append(',');
+        sb.append("Entities.Owner's Last Name");
+        sb.append(',');
+        sb.append("Entities.Owner's First Name");
+        sb.append(',');
+        sb.append("Insurance Expiration Date");
+        sb.append('\n');
 
-            printVehicles(aboutToExpireList);
-        }
-        else{
-            System.out.println("You must select one of the two choices (1 or 2)");
-            secondChoiceSelected();
-        }
+        for (Vehicle v : insToExpireList) {
+            sb.append(v.getId());
+            sb.append(',');
+            sb.append(v.getPlate());
+            sb.append(',');
+            sb.append(v.getOwner().getId());
+            sb.append(',');
+            sb.append(v.getOwner().getLastName());
+            sb.append(',');
+            sb.append(v.getOwner().getFirstName());
+            sb.append(',');
+            sb.append(v.getExpiration_date());
+            sb.append('\n');
 
+        }
+        if (pw != null) {
+            pw.write(sb.toString());
+            pw.close();
+            System.out.println("--- The file "+fileName+" has been created on "+System.getProperty("user.dir"));
+        }else{
+            System.err.println("--- ! Something went wrong with the exporting to csv file.");
+        }
     }
 }

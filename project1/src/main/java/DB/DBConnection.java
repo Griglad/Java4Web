@@ -11,14 +11,14 @@ public class DBConnection {
             + "serverTimezone=UTC";
 
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "610680";
+    private static final String DB_PASSWORD = "java4web";
     private Connection connection;
 
     public DBConnection() {
         try {
             connection = openConnection();
         } catch (Exception e) {
-            System.out.println("--- ! Could not connect to data base");
+            System.err.println("--- ! Could not connect to data base");
         }
     }
 
@@ -32,7 +32,7 @@ public class DBConnection {
             return DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);
         }
         catch (ClassNotFoundException | SQLException e) {
-            System.out.println("--- ! Could not connect to data base");
+            System.err.println("--- ! Could not connect to data base");
             return null;
         }
 
@@ -43,7 +43,7 @@ public class DBConnection {
             try {
                 connection.close();
             } catch (SQLException e) {
-                System.out.println("--- ! Connection to the database could not be closed");
+                System.err.println("--- ! Connection to the database could not be closed");
             }
         }
     }

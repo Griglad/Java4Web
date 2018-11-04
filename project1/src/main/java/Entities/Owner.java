@@ -2,7 +2,6 @@ package Entities;
 
 public class Owner {
 
-
     private int id;
     private String lastName;
     private String firstName;
@@ -12,7 +11,6 @@ public class Owner {
         this.lastName = lastName;
         this.firstName = firstName;
     }
-
 
     public int getId() {
         return id;

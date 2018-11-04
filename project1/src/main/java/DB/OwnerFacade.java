@@ -11,12 +11,11 @@ public class OwnerFacade {
 
     public Owner getOwnerById(Connection dbConnection, int id) {
         String show = "select id,last_name,first_name from owner where id = ?";
-        ResultSet resultSet = null;
         Owner owner = null;
         try (PreparedStatement preparedStatement = dbConnection.prepareStatement(show)) {
             preparedStatement.setInt(1, id);
 
-            resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 int owner_id = resultSet.getInt("id");
                 String lastName = resultSet.getString("last_name");
@@ -26,7 +25,7 @@ public class OwnerFacade {
             }
             return owner;
         } catch (SQLException e) {
-            System.out.println("--- ! Data from table owner could not be fetched.");
+            System.err.println("--- ! Data from table owner could not be fetched.");
             return null;
         }
     }

@@ -11,10 +11,6 @@ public class Vehicle implements Comparable<Vehicle>{
     private int id;
     private Date expiration_date;
 
-    public void setPlate(String plate) {
-        this.plate = plate;
-    }
-
     public String getPlate() {
         return plate;
     }
@@ -23,24 +19,12 @@ public class Vehicle implements Comparable<Vehicle>{
         return expiration_date;
     }
 
-    public void setExpiration_date(Date expiration_date) {
-        this.expiration_date = expiration_date;
-    }
-
     public Owner getOwner() {
         return owner;
     }
 
-    public void setOwner_id(Owner owner) {
-        this.owner = owner;
-    }
-
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
 
@@ -49,8 +33,19 @@ public class Vehicle implements Comparable<Vehicle>{
         this.owner = owner;
         this.id = id;
         this.expiration_date = expiration_date;
+    }
 
+    public boolean isInsured(int daysOffset){
 
+        if(getExpiration_date()==null)
+            return false;
+        else{
+            return !Util.isBeforeDate(Util.toCalendar(getExpiration_date()),daysOffset);
+        }
+    }
+
+    public boolean isInsured(){
+        return isInsured(0);
     }
 
     @Override
@@ -63,12 +58,11 @@ public class Vehicle implements Comparable<Vehicle>{
                 '}';
     }
 
-    public int compareTo(Vehicle o) {// kane to implemenation
+    public int compareTo(Vehicle o) {
 
         return this.plate.compareTo(o.plate);
 
     }
-
 }
 
 

@@ -1,14 +1,38 @@
 package UI;
 
-import App.CheckIsuranceStatus;
+import App.AboutToExpireInsurances;
+import App.VehicleInsuranceStatusChecker;
+import App.TotalFineCalculator;
+import Entities.Owner;
+import Entities.Vehicle;
 import Utils.Util;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MenuManager {
 
     public void runMenu(Connection connection) {
+
+        printAvailableFeatures();
+
+        int choice = getSelectedFeature();
+
+        switch (choice) {
+            case 1:
+                runCheckInsuranceStatus(connection);
+                break;
+            case 2:
+                runAboutToExpireInsurances(connection);
+                break;
+            case 3:
+               runTotalOwnerFineCalculator(connection);
+               break;
+        }
+    }
+
+    private void printAvailableFeatures(){
         System.out.println(" ------------------------------------");
         System.out.println("|       First Project - Team 3       |");
         System.out.println(" ------------------------------------");
@@ -17,12 +41,15 @@ public class MenuManager {
         System.out.println("* 1) Entities.Vehicle Insurance Status");
         System.out.println("* 2) Forecoming Expiries");
         System.out.println("* 3) Calculate Fines");
-        Scanner scanner = new Scanner(System.in);
+    }
 
+    private int getSelectedFeature(){
+        Scanner scanner = new Scanner(System.in);
         int choice = 0;
         boolean flag = true;
+
         while (flag) {
-            choice = Util.ReadInt(scanner);
+            choice = Util.readInt(scanner);
             if (choice > 0 && choice < 4) {
                 flag = false;
             } else {
@@ -31,21 +58,51 @@ public class MenuManager {
         }
 
         System.out.println("_____________________________________");
+        return choice;
+    }
 
-        switch (choice) {
-            case 1:
-                if(new CheckIsuranceStatus().getInsuranceStatus(connection)==true){
-                    System.out.println("--- The insurance of the vehicle is valid.");
-                }
-                else{
-                    System.out.println("--- The insurance of the vehicle is expired.");
+    private void runCheckInsuranceStatus(Connection connection){
 
-                }
-            case 2:
-                AboutToExpireInsurances
-            case 3:
-                //third choice
+        VehicleUIManager vUIManager = new VehicleUIManager();
+        Vehicle vehicle = vUIManager.getVehicleByReadingPlate(connection);
+        boolean isVehicleInsured = new VehicleInsuranceStatusChecker().isVehicleInsured(vehicle);
+        vUIManager.printVehicleInsuranceStatus(isVehicleInsured);
+    }
+
+    private void runAboutToExpireInsurances(Connection connection){
+        UIManager uiManager = new UIManager();
+        AboutToExpireInsurances ateInsurance = new AboutToExpireInsurances();
+
+        int days = uiManager.readDaysOffset();
+        boolean isSortSelected = uiManager.readYesNoOption("---Would you like to have the results sorted?");
+        ArrayList<Vehicle> aboutToExpireList = new AboutToExpireInsurances().getListOfExpiringInsurances(connection,days,isSortSelected);
+
+        int exportOption = uiManager.readExportOption();
+        if(exportOption==1){
+            ateInsurance.createCSVfile(aboutToExpireList);
+        }
+        else {
+            new VehicleUIManager().printVehicles(aboutToExpireList, days);
         }
     }
 
+    private void runTotalOwnerFineCalculator(Connection connection){
+
+        TotalFineCalculator totalFineCalculator = new TotalFineCalculator();
+        UIManager uiManager = new UIManager();
+
+        int fine = uiManager.readNotNegativeInteger("---Please provide the fine cost of an uninsured vehicle (cents):");
+
+        Owner owner = new OwnerUIManager().readOwnerId(connection);
+
+        ArrayList<Vehicle> vehicles = totalFineCalculator.getVehiclesByOwnerId(connection, owner.getId());
+
+        if(!vehicles.isEmpty()){
+            int sum = totalFineCalculator.getTotalFine(vehicles,fine);
+            new OwnerUIManager().printFine(owner, sum);
+        }
+        else{
+            new OwnerUIManager().printOwnerWithNoVehicles(owner);
+        }
+    }
 }
