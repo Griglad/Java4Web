@@ -32,6 +32,6 @@ You will need to have installed:
 
 ## Contributors
  * Zisopoulos Giorgos
- * Kondelis Eleftherios
+ * Kontelis Eleftherios
  * Ladas Grigoris
  * Papadopoulos Dimitris - Team Leader
