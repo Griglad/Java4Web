@@ -6,7 +6,7 @@ Most importantly from the engineering point of view, the project is designed and
 
 ## Getting Started
 
-###IMPORTANT 
+### IMPORTANT 
 The project has two branches the master and the refactorBranch.
  * The master contains a previous working version of project that is NOT organized in the optimal way.
  * The refactorBranch contains the most recent version of our project, that we suggest using.
