@@ -7,20 +7,20 @@ Most importantly from the engineering point of view, the project is designed and
 ## Getting Started
 
 ### IMPORTANT 
-The project has two branches the master and the refactorBranch.
+The project has two branches: the master and the refactorBranch.
  * The master contains a previous working version of project that is NOT organized in the optimal way.
  * The refactorBranch contains the most recent version of our project, that we suggest using.
  
 1)To get started clone the project
 
-2)Open the config.properties file an write your:
+2)Open the config.properties file and write your:
  * DB_USER
  * DB_PASSWORD
  * database in the DB_CONNECTION
  
-3)Unzip Data.zip and import the two tables proj1_vehicle and proj1_owner into you database
+3)Unzip Data.zip and import the two tables proj1_vehicle and proj1_owner into your database
 
-4)Open the project with your IDE. Alternatevly if you just want to run it, export the project into a .jar file and open it via windows command line. 
+4)Open the project with your IDE. Alternatively, if you just want to run it, export the project into a .jar file and open it via windows command line. 
 
 ## Installing
 
@@ -31,7 +31,7 @@ You will need to have installed:
  * SQL database
 
 ## Contributors
- * Zisopoulos Giorgos
- * Kontelis Eleftherios
- * Ladas Grigoris
- * Papadopoulos Dimitris - Team Leader
+ * [Kontelis Eleftherios](https://github.com/it1439)
+ * [Ladas Grigoris](https://github.com/Griglad)
+ * [Papadopoulos Dimitris](https://github.com/jim93m) - Team Leader
+ * [Zisopoulos Giorgos](https://github.com/gzisop)
